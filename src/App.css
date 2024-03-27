@@ -1,0 +1,46 @@
+.battleZone {
+    width: 1280px;
+    height: 720px;
+    background-color: aqua;
+}
+
+.appComponent {
+    width: 1280px;
+    height: 720px;
+    border: 5px solid black;
+}
+
+.dungeonDiv {
+    background-image: url('./assets/images/backgrounds/dungeon1.png');
+    width: 1280px;
+    height: 480px;
+}
+
+.console {
+    position: absolute;
+    bottom: 256px;
+    width: 1280px;
+    height: 120px;
+    overflow-y: auto;
+    background-color: black;
+    color: white;
+}
+
+
+
+.bottomPanel {
+    background-image: url('./assets/images/backgrounds/bottompanel.png');
+    width: 1280px;
+    height: 240px;
+}
+
+
+.playerDiv {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.enemyDiv {
+  background-color: blue;
+}
