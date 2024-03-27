@@ -12,7 +12,7 @@ function App() {
 
       {mode === 'start' && <StartMenu startClick={() => setMode('battle')}/>}
 
-      {mode === 'battle' && <Battle player={variables.coconera} enemy={variables.goblin}/>}
+      {mode === 'battle' && <Battle playerStats={variables.coconera} enemyTeam={variables.enemyTeam}/>}
 
     </div>
 }

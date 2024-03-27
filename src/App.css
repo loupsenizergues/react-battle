@@ -1,13 +1,26 @@
+.appComponent {
+    display: flex;
+    justify-content: center;
+    width: 1280px;
+    height: 720px;
+    border: 5px solid black;
+}
+
+.startMenuDiv {
+    background-color: azure;
+    width: 1280px;
+    height: 720px;
+}
+
+.startMenu {
+    position: absolute;
+    top: 50%;
+}
+
 .battleZone {
     width: 1280px;
     height: 720px;
     background-color: aqua;
-}
-
-.appComponent {
-    width: 1280px;
-    height: 720px;
-    border: 5px solid black;
 }
 
 .dungeonDiv {
@@ -18,7 +31,7 @@
 
 .console {
     position: absolute;
-    bottom: 256px;
+    top: 380px;
     width: 1280px;
     height: 120px;
     overflow-y: auto;
@@ -36,11 +49,17 @@
 
 
 .playerDiv {
-    padding: 16px;
+    padding: 12px;
     display: flex;
     align-items: center;
 }
 
 .enemyDiv {
-  background-color: blue;
+    padding: 50px;
+    display: flex;
+    .avatar {height: 150px; width: 150px; border-radius: 50%;}
+}
+.enemyInfos {
+    width: 200px;
+    padding: 5px;
 }
