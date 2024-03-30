@@ -33,7 +33,7 @@
     position: absolute;
     top: 380px;
     width: 1280px;
-    height: 120px;
+    height: 108px;
     overflow-y: auto;
     background-color: black;
     color: white;
@@ -52,14 +52,26 @@
     padding: 12px;
     display: flex;
     align-items: center;
+    .avatar:hover {outline: 5px ridge yellow;}
+}
+
+.playerInfos {
+    width: 408px;
 }
 
 .enemyDiv {
     padding: 50px;
     display: flex;
-    .avatar {height: 150px; width: 150px; border-radius: 50%;}
 }
+
 .enemyInfos {
     width: 200px;
     padding: 5px;
+    .avatar {height: 150px; width: 150px; border-radius: 50%;}
+    .avatar:hover {outline: 5px ridge yellow;}
 }
+
+
+
+
+

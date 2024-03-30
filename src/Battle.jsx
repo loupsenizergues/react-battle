@@ -1,85 +1,44 @@
 import { useState,useRef,useEffect } from 'react';
+import {Console, Enemies, Players, useInitializeHealthValues} from './BattleTools.jsx'
 
-function Bar ({value, valueMax, label, height=20, color='red'}) {
+// const useBattleSequence = ()
 
-    var percentage = (value/valueMax) * 100;
-    if (value<=0) {percentage=0}
-    const barStyle = {
-        width: `${percentage}%`,
-        height: 20,
-        background: 'red',
-      }
+export function Battle({playerTeam, enemyTeam}) {
 
-    return <div>
-        <div style={barStyle}>{value}/{valueMax} {label}</div>
-    </div>
-}
-
-export function Battle({playerStats, enemyTeam}) {
-    const consoleRef = useRef()
+    //WHAT MANAGES TEXT CONSOLE............................................
     const [consoleMessages, setConsoleMessages] = useState([])
     const addMessageToConsole = (message) => {setConsoleMessages(consoleMessages.concat(message))}
 
-    useEffect(() => {
-        if (consoleRef.current) {
-            consoleRef.current.scrollTop = consoleRef.current.scrollHeight;
-          }
-    }, [consoleMessages])
+    //.....................................................................
 
-    const [player, setPlayer] = useState(playerStats)
-
+    const [players, setPlayers] = useState(playerTeam)
     const [enemies, setEnemies] = useState(enemyTeam)
 
-    const [turnState, setTurnState] = useState('playerTurn')
-    const [playerChoice, setPlayerChoice] = useState('')
+    //INITIALIZING HEALTH FOR ALL CHARACTERS IN BATTLE...............
 
-    const simpleAttack= () => {
-        var newHealth=enemies[0].health - 10
-        enemies[0] = {...enemies[0], health: newHealth}
-        setEnemies(enemies)}
+    const {playersHealthsArray, enemiesHealthsArray} = useInitializeHealthValues(players, enemies)
+    const [playersHealths, setPlayersHealths] = useState(playersHealthsArray)
+    const [enemiesHealths, setEnemiesHealths] = useState(enemiesHealthsArray)
 
-    useEffect(() => {
-        if (turnState === 'playerTurn') {
-            addMessageToConsole('Tour du joueur: Choisissez une action')
-        }
-    }, [turnState])
+    //Ordre du combat : on sélectionne les actions pour tous les personnages joueurs,
+    //puis le tour se déroule. L'ordre de jeu est en fonction de l'agilité des personnages.
 
-    useEffect(() => {
-        if (playerChoice === 'simpleAttack') {
-            simpleAttack()
-            addMessageToConsole('attack')
-            setPlayerChoice('')}
-        }, [playerChoice])
 
     return <div className='battleZone'>
-        <div className='dungeonDiv'>
-            <div className='enemyDiv'>
-                {enemies.map((enemy,index) =>
-                    <div className='enemyInfos' key={index}>
-                        <img className='avatar' src={enemy.img}/>
-                        <div>{enemy.name}</div>
-                        <Bar value={enemy.health} valueMax={enemy.healthMax} label='PV'/>
-                    </div>)}
-            </div>
-        </div>
-        <div className='console' ref={consoleRef}>
-            {consoleMessages.map((msg,index) =>
-                <div key={index}>{msg}</div>)}
-        </div>
-        <div className='bottomPanel'>
-            <div className='playerDiv'>
-                <div className='playerInfos'>
-                    <img src={player.img}/>
-                    <div>{player.name}</div>
-                    <Bar value={player.health} valueMax={player.healthMax} label='PV'/>
-                </div>
 
-                <div className='playerMenu'>
-                    <button onClick={() => setPlayerChoice('simpleAttack')}>Attaquer</button>
-                    <button>Compétences</button>
-                    <button>Défendre</button>
-                </div>
-            </div>
+        <Enemies enemies={enemies} enemiesHealths={enemiesHealths}/>
+
+        <Console consoleMessages={consoleMessages}/>
+
+        <Players players={players} playersHealths={playersHealths}/>
+
+        <div className='playerMenu'>
+            <button onClick={() => {addMessageToConsole('prout')
+                                    enemiesHealths[0]-=10
+                                    setEnemiesHealths(enemiesHealths)}}>Attaquer</button>
         </div>
-    </div>
-    }
+        </div>}
+
+
+
+
