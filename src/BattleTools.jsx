@@ -68,3 +68,9 @@ export function useInitializeHealthValues (players,enemies) {
     enemies.forEach((enemy) => enemiesHealthsArray.push(enemy.healthMax))
     return {playersHealthsArray, enemiesHealthsArray}
 }
+
+export function useSkill(skill, userTeam, userIndex, onEnemiesOrPlayers, receiverTeamHealths, receiverIndex) {
+    receiverTeamHealths[receiverIndex] -= (skill.baseDamages + userTeam[userIndex].strength * 0.2)
+    var onEnemiesOrPlayers = 'enemies'
+    return {receiverTeamHealths, onEnemiesOrPlayers}
+}
