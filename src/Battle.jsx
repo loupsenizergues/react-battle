@@ -1,35 +1,62 @@
-import { useState,useRef,useEffect } from 'react';
-import {Console, Enemies, Players, useInitializeHealthValues} from './BattleTools.jsx'
+import { useState,useRef,useEffect,createContext } from 'react';
+import {Console, Enemies, Players, useInitializeHealthValues, useBattleSequence} from './BattleTools.jsx'
 import {wait, resolveAfter} from './helpers.jsx'
-import {playerTeam, enemyTeam} from './variables.jsx'
 
+export const battleContext = createContext()
 
 export function Battle() {
 
-    //WHAT MANAGES TEXT CONSOLE............................................
-    const [consoleMessages, setConsoleMessages] = useState([])
-    const addMessageToConsole = (message) => {setConsoleMessages(consoleMessages.concat(message))}
-    //.....................................................................
-    const [players, setPlayers] = useState(playerTeam)
-    const [enemies, setEnemies] = useState(enemyTeam)
 
-    //INITIALIZING HEALTH FOR ALL CHARACTERS IN BATTLE...............
+    const {
+        players,
+        setPlayers,
+        enemies,
+        setEnemies,
+        playersHealths,
+        setPlayersHealths,
+        enemiesHealths,
+        setEnemiesHealths,
+        playersChoices,
+        setPlayersChoices,
+        enemiesChoices,
+        setEnemiesChoices,
+        selectingTarget,
+        setSelectingTarget,
+        currentChoice,
+        setCurrentChoice,
+        consoleMessages,
+        addMessageToConsole
+      } = useBattleSequence()
 
-    const {playersHealthsArray, enemiesHealthsArray} = useInitializeHealthValues(players, enemies)
-    const [playersHealths, setPlayersHealths] = useState(playersHealthsArray)
-    const [enemiesHealths, setEnemiesHealths] = useState(enemiesHealthsArray)
+    return <battleContext.Provider value={{
+        players,
+        setPlayers,
+        enemies,
+        setEnemies,
+        playersHealths,
+        setPlayersHealths,
+        enemiesHealths,
+        setEnemiesHealths,
+        playersChoices,
+        setPlayersChoices,
+        enemiesChoices,
+        setEnemiesChoices,
+        selectingTarget,
+        setSelectingTarget,
+        currentChoice,
+        setCurrentChoice,
+        addMessageToConsole
+      }}>
+        <div className='battleZone'>
 
-    const [sequence,setSequence] = useState([])
+            <Enemies/>
 
-    return <div className='battleZone'>
+            <Console consoleMessages={consoleMessages}/>
 
-        <Enemies enemies={enemies} enemiesHealths={enemiesHealths}/>
+            <Players/>
 
-        <Console consoleMessages={consoleMessages}/>
-
-        <Players players={players} enemies={enemies} playersHealths={playersHealths}/>
-
-        <div className='tests'>
+            <div className='tests'>
+            </div>
         </div>
-        </div>
+    </battleContext.Provider>
     }

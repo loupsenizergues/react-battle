@@ -2,7 +2,9 @@ import {Battle} from './Battle.jsx'
 import {StartMenu} from './StartMenu.jsx'
 import './App.css'
 import {playerTeam,enemyTeam} from './variables.jsx'
-import {useState} from 'react'
+import {useState, createContext} from 'react'
+
+
 
 function App() {
 
