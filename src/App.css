@@ -48,23 +48,25 @@
 }
 
 
-.playerDiv {
+.playersDiv {
     padding: 12px;
     display: flex;
     align-items: center;
     .avatar:hover {outline: 5px ridge yellow;}
 }
 
-.playerInfos {
+.player {
     width: 408px;
+    height: 216px;
+    display: flex;
 }
 
-.enemyDiv {
+.enemiesDiv {
     padding: 50px;
     display: flex;
 }
 
-.enemyInfos {
+.enemy {
     width: 200px;
     padding: 5px;
     .avatar {height: 150px; width: 150px; border-radius: 50%;}

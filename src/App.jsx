@@ -1,7 +1,7 @@
 import {Battle} from './Battle.jsx'
 import {StartMenu} from './StartMenu.jsx'
 import './App.css'
-import * as variables from './variables.jsx'
+import {playerTeam,enemyTeam} from './variables.jsx'
 import {useState} from 'react'
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
 
       {mode === 'start' && <StartMenu startClick={() => setMode('battle')}/>}
 
-      {mode === 'battle' && <Battle playerTeam={variables.playerTeam} enemyTeam={variables.enemyTeam}/>}
+      {mode === 'battle' && <Battle/>}
 
     </div>
 }

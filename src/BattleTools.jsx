@@ -1,5 +1,6 @@
 import { useState,useRef,useEffect } from 'react';
 
+
 export function Bar ({value, valueMax, label, height=20, widthMultiplicator=1, color='red'}) {
 
     var percentage = (value/valueMax) * 100;
@@ -32,29 +33,57 @@ export function Console({consoleMessages}) {
 
 export function Enemies({enemies, enemiesHealths}) {
     return <div className='dungeonDiv'>
-                <div className='enemyDiv'>
+                <div className='enemiesDiv'>
                         {enemies.map((enemy,index) =>
                         <Enemy enemy={enemy} enemyHealth={enemiesHealths[index]} index={index}/>)}</div>
                 </div>}
 
 export function Players({players, playersHealths}) {
+
     return <div className='bottomPanel'>
-               <div className='playerDiv'>
+               <div className='playersDiv'>
                     {players.map((player,index) =>
                     <Player player={player} playerHealth={playersHealths[index]} index={index}/>)}
                 </div>
             </div>}
 
 function Player({player, playerHealth, index}) {
-    return <div className='playerInfos' key={index}>
-    <img className='avatar' src={player.img}/>
-    <div>{player.name}</div>
-    <Bar value={playerHealth} valueMax={player.healthMax} widthMultiplicator={0.5} label='PV'/>
+    const [playerChoice, setPlayerChoice] = useState({user: player, skill: null, target: null})
+    var [choiceIsDone,setChoiceIsDone] = useState(false)
+
+    useEffect(() => playerChoice.skill !== null && playerChoice.target !== null ? setChoiceIsDone(true) : setChoiceIsDone(false))
+
+    const selectSkill = (skill) => {
+        var playerChoiceCopy = playerChoice
+        playerChoiceCopy.skill=skill
+        setPlayerChoice(playerChoiceCopy)
+    }
+
+    const selectTarget = (target) => {
+        var playerChoiceCopy = playerChoice
+        playerChoiceCopy.target=target
+        setPlayerChoice(playerChoiceCopy)
+    }
+
+    return <div className='player' key={index}>
+        <div className='playerInfos'>
+            <img className='avatar' src={player.img}/>
+            <div>{player.name}</div>
+            <Bar value={playerHealth} valueMax={player.healthMax} widthMultiplicator={0.5} label='PV'/>
+        </div>
+        <div className='playerMenu'>
+            {player.skills.map((skill, index) => 
+            <button onClick={() => {
+                selectSkill(skill)
+            }}key={index}>{skill.name}</button>)}
+
+            {/* <div>{player.name} utilisera {playerChoice.skill} sur {playerChoice.target.name}</div> */}
+        </div>
 </div>
 }
 
 function Enemy ({enemy, enemyHealth, index}) {
-    return <div className={'enemyInfos'} key={index}>
+    return <div className={'enemy'} key={index}>
     <img className={'avatar'} src={enemy.img} />
     <div>{enemy.name}</div>
     <Bar value={enemyHealth} valueMax={enemy.healthMax} widthMultiplicator={0.5} label='PV'/>
@@ -69,8 +98,7 @@ export function useInitializeHealthValues (players,enemies) {
     return {playersHealthsArray, enemiesHealthsArray}
 }
 
-export function useSkill(skill, userTeam, userIndex, onEnemiesOrPlayers, receiverTeamHealths, receiverIndex) {
-    receiverTeamHealths[receiverIndex] -= (skill.baseDamages + userTeam[userIndex].strength * 0.2)
-    var onEnemiesOrPlayers = 'enemies'
-    return {receiverTeamHealths, onEnemiesOrPlayers}
+export function useSkill(skill, userTeam, userIndex, receiverTeam, receiverIndex) {
+    const damages = (skill.baseDamages + userTeam[userIndex].strength * 0.2)
+    return {damages}
 }
