@@ -5,7 +5,7 @@ import {wait, resolveAfter} from './helpers.jsx'
 export const battleContext = createContext()
 
 export function Battle() {
-
+    const [turn, setTurn] = useState(0);
 
     const {
         players,
@@ -45,13 +45,14 @@ export function Battle() {
         setSelectingTarget,
         currentChoice,
         setCurrentChoice,
-        addMessageToConsole
+        addMessageToConsole,
+        consoleMessages,
       }}>
         <div className='battleZone'>
 
             <Enemies/>
 
-            <Console consoleMessages={consoleMessages}/>
+            <Console/>
 
             <Players/>
 

@@ -1,8 +1,10 @@
 import { useState,useRef,useEffect, useContext } from 'react';
 import { battleContext } from './Battle';
-import {playerTeam, enemyTeam} from './variables.jsx'
+import {playerTeam, enemyTeam, simpleAttack} from './variables.jsx'
+import { wait } from './helpers.jsx';
 
 export const useBattleSequence = () => {
+
     //WHAT MANAGES TEXT CONSOLE............................................
     const [consoleMessages, setConsoleMessages] = useState([])
     const addMessageToConsole = (message) => {setConsoleMessages(consoleMessages.concat(message))}
@@ -22,6 +24,24 @@ export const useBattleSequence = () => {
 
     const [selectingTarget,setSelectingTarget] = useState(false)
     const [currentChoice,setCurrentChoice] = useState({userIndex: 0})
+
+    if (playersChoices.length === players.length) {
+        var updatedEnemiesHealths = [...enemiesHealths];
+        var messages = []
+        for (const e of playersChoices) {
+            // const damages = useSkill({skill: e.skill, userTeam: players, userIndex: e.userIndex, receiverTeam: e.target.team, receiverIndex: e.target.index})
+            const message = `10 dommages infligés à ${e.target.team[e.target.index].name}`
+            updatedEnemiesHealths[e.target.index] -= 10
+            messages.push(message)
+        }
+
+        for (const message of messages) {
+            addMessageToConsole(message)
+        }
+        setEnemiesHealths(updatedEnemiesHealths)
+        setPlayersChoices([])
+        setCurrentChoice({userIndex: 0})
+    }
 
     return {
         players,
@@ -61,8 +81,9 @@ export function Bar ({value, valueMax, label, height=20, widthMultiplicator=1, c
     </div>
 }
 
-export function Console({consoleMessages}) {
+export function Console() {
     const consoleRef = useRef()
+    const {consoleMessages} = useContext(battleContext)
 
     useEffect(() => {
         if (consoleRef.current) {
@@ -103,11 +124,6 @@ function Player({player, playerHealth, index}) {
         setPlayersChoices(playersChoices)
         setCurrentChoice({userIndex: index + 1})
     }}, [currentChoice])
-
-    useEffect(() => {
-        if (playersChoices.length === players.length) {
-        addMessageToConsole('Toutes les actions ont été choisies pour le tour')}
-    }, [playersChoices])
 
     return <div className='player' key={index}>
         <div className='playerInfos'>
