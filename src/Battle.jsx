@@ -5,8 +5,6 @@ import {wait, resolveAfter} from './helpers.jsx'
 export const battleContext = createContext()
 
 export function Battle() {
-    const [turn, setTurn] = useState(0);
-
     const {
         players,
         setPlayers,
@@ -18,8 +16,6 @@ export function Battle() {
         setEnemiesHealths,
         playersChoices,
         setPlayersChoices,
-        enemiesChoices,
-        setEnemiesChoices,
         selectingTarget,
         setSelectingTarget,
         currentChoice,
@@ -27,6 +23,20 @@ export function Battle() {
         consoleMessages,
         addMessageToConsole
       } = useBattleSequence()
+    
+    useEffect(() => {
+      var newPlayers = []
+      var newEnemies = []
+      for (var i=0; i<playersHealths.length; i++) {
+        if (playersHealths[i] > 0) newPlayers.push(players[i])
+      }
+      for (var i=0; i<enemiesHealths.length; i++) {
+        if (enemiesHealths[i] > 0) newEnemies.push(enemies[i])
+      }
+    setEnemies(newEnemies)
+    setPlayers(newPlayers)
+    }, [playersHealths, enemiesHealths])
+    
 
     return <battleContext.Provider value={{
         players,
@@ -39,8 +49,6 @@ export function Battle() {
         setEnemiesHealths,
         playersChoices,
         setPlayersChoices,
-        enemiesChoices,
-        setEnemiesChoices,
         selectingTarget,
         setSelectingTarget,
         currentChoice,

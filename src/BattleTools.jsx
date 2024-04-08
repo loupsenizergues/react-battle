@@ -3,12 +3,45 @@ import { battleContext } from './Battle';
 import {playerTeam, enemyTeam, simpleAttack} from './variables.jsx'
 import { wait } from './helpers.jsx';
 
+export const useMakeEnemiesChoices = (enemies, players) => {
+    var enemiesChoices = []
+    var enemyIndex = 0
+    enemies.forEach((enemy) => {
+        const skillIndex=0 //A FAIRE RANDOM POUR L'INSTANT
+        const targetIndex=0
+        const choice = {skill: enemy.skills[skillIndex], userIndex: enemyIndex, target: {team: players, index: targetIndex}}
+        enemiesChoices.push(choice)
+    })
+    return enemiesChoices
+}
+
 export const useBattleSequence = () => {
 
+    function useSkill(skill, userTeam, userIndex, receiverTeam, receiverIndex) {
+        const damages = (skill.baseDamages + userTeam[userIndex].strength * 0.2)
+        return damages
+    }
     //WHAT MANAGES TEXT CONSOLE............................................
     const [consoleMessages, setConsoleMessages] = useState([])
-    const addMessageToConsole = (message) => {setConsoleMessages(consoleMessages.concat(message))}
+    const addMessageToConsole = (message) => {setConsoleMessages(prev => prev.concat(message))}
     //.....................................................................
+
+    const makeDamage = (damages, team, index) => {
+        if (team === enemies) {
+            setEnemiesHealths(prev => {
+                const updatedEnemiesHealths = [...prev];
+                updatedEnemiesHealths[index] -= damages;
+                return updatedEnemiesHealths;
+            });
+        } else {
+            setPlayersHealths(prev => {
+                const updatedPlayersHealths = [...prev];
+                updatedPlayersHealths[index] -= damages;
+                return updatedPlayersHealths;
+            });
+        }
+    };
+    
     
     const [players, setPlayers] = useState(playerTeam)
     const [enemies, setEnemies] = useState(enemyTeam)
@@ -19,26 +52,28 @@ export const useBattleSequence = () => {
     const [playersHealths, setPlayersHealths] = useState(playersHealthsArray)
     const [enemiesHealths, setEnemiesHealths] = useState(enemiesHealthsArray)
 
-    const [playersChoices,setPlayersChoices] = useState([])
-    const [enemiesChoices,setEnemiesChoices] = useState([])
+    const [playersChoices, setPlayersChoices] = useState([])
+    // const [enemiesChoices,setEnemiesChoices] = useState([])
 
     const [selectingTarget,setSelectingTarget] = useState(false)
     const [currentChoice,setCurrentChoice] = useState({userIndex: 0})
 
     if (playersChoices.length === players.length) {
-        var updatedEnemiesHealths = [...enemiesHealths];
-        var messages = []
+        const enemiesChoices = useMakeEnemiesChoices(enemies, players)
         for (const e of playersChoices) {
-            // const damages = useSkill({skill: e.skill, userTeam: players, userIndex: e.userIndex, receiverTeam: e.target.team, receiverIndex: e.target.index})
-            const message = `10 dommages infligés à ${e.target.team[e.target.index].name}`
-            updatedEnemiesHealths[e.target.index] -= 10
-            messages.push(message)
-        }
-
-        for (const message of messages) {
+            const damages = useSkill(e.skill, players, e.userIndex, e.target.team, e.target.index)
+            const message = `${damages} dommages infligés à ${e.target.team[e.target.index].name}`
+            makeDamage(damages, e.target.team, e.target.index)
             addMessageToConsole(message)
         }
-        setEnemiesHealths(updatedEnemiesHealths)
+
+        for (const e of enemiesChoices) {
+            const damages = useSkill(e.skill, enemies, e.userIndex, e.target.team, e.target.index)
+            const message = `${damages} dommages infligés à ${e.target.team[e.target.index].name}`
+            makeDamage(damages, e.target.team, e.target.index)
+            addMessageToConsole(message)
+        }
+
         setPlayersChoices([])
         setCurrentChoice({userIndex: 0})
     }
@@ -54,8 +89,6 @@ export const useBattleSequence = () => {
         setEnemiesHealths,
         playersChoices,
         setPlayersChoices,
-        enemiesChoices,
-        setEnemiesChoices,
         selectingTarget,
         setSelectingTarget,
         currentChoice,
@@ -176,7 +209,4 @@ export function useInitializeHealthValues (players,enemies) {
     return {playersHealthsArray, enemiesHealthsArray}
 }
 
-export function useSkill(skill, userTeam, userIndex, receiverTeam, receiverIndex) {
-    const damages = (skill.baseDamages + userTeam[userIndex].strength * 0.2)
-    return {damages}
-}
+
